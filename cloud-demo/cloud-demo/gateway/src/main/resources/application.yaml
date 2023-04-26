@@ -9,9 +9,9 @@ spring:
     gateway:
       routes:
         - id: user-service #路由标识必须唯一
-          uri: lb://userservice # 路由的目标地址
+          uri: lb://userservice # 路由的目标地址,服务名称
           predicates:   # 路由断言 判断请求是否符号标准
-            - Path=/user/**  # 路径断言，判断路径是否以/user开头，是就符号规则
+            - Path=/user/**  # 路径断言，判断路径是否以/user开头，是就符合规则 ,还得匹配controller路径
 #          filters:
 #            - AddRequestHeader=Truth, sb #过滤器，其中的逗号是等于的意思，添加响应头，需要在controller中添加参数
         - id: order-service
@@ -21,3 +21,20 @@ spring:
         #    - After  #时间
       default-filters:   #全局过滤器
         - AddRequestHeader=Truth, sb #过滤器，其中的逗号是等于的意思，添加响应头，需要在controller中添加参数
+    # 跨域问题
+      globalcors: # 全局的跨域处理
+        add-to-simple-url-handler-mapping: true # 解决options请求被拦截问题
+        corsConfigurations:
+          '[/**]': #路径
+            allowedOrigins: # 允许哪些网站的跨域请求
+              - "http://localhost:8090"
+              - "http://www.leyou.com"
+            allowedMethods: # 允许的跨域ajax的请求方式
+              - "GET"
+              - "POST"
+              - "DELETE"
+              - "PUT"
+              - "OPTIONS"
+            allowedHeaders: "*" # 允许在请求中携带的头信息
+            allowCredentials: true # 是否允许携带cookie
+            maxAge: 360000 # 这次跨域检测的有效期
